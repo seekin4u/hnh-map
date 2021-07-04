@@ -721,6 +721,48 @@ func (m *Map) hideMarker(rw http.ResponseWriter, req *http.Request) {
 	return
 }
 
+func (m *Map) hideAllSame(rw http.ResponseWriter, req *http.Request) {
+	s := .getSession(req)
+	if s== nil || !s.Auths.Has.(AUTH_ADMIN) {
+		http.Redirect(rw, req, "/", 302)
+		return
+	}
+	
+	err := m.db.Update(func(tx *bbolt.Tx) error {
+		mb, err := tx.CreateBucketIfNotExists([]byte("markers"))
+		if err != nil {
+			return err
+		}
+		grid, err := mb.CreateBucketIfNotExists([]byte("grid"))
+		if err != nil {
+			return err
+		}
+		sameName, err := mb.CreateBucketIfNotExists([]byte("name"))
+		if err != nil {
+			return err
+		}
+		key := sameName.Get([]byte(req.FormValue("name")))
+		if key == nil {
+			return fmt.Errorf("Could not find key %s", req.FormValue("id"))
+		}
+		raw := grid.Get(key)
+		if raw == nil {
+			return fmt.Errorf("Could not find key %s", string(key))
+		}
+		m := Marker{}
+		json.Unmarshal(raw, &m)
+		m.Hidden = true
+		raw, _ = json.Marshal(m)
+		grid.Put(key, raw)
+		return nil
+	})
+	if err != nil {
+		log.Println(err)
+	}
+	return
+
+}
+
 func (m *Map) merge(rw http.ResponseWriter, req *http.Request) {
 	err := req.ParseMultipartForm(1024 * 1024 * 500)
 	if err != nil {
