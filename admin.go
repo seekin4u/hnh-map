@@ -722,7 +722,7 @@ func (m *Map) hideMarker(rw http.ResponseWriter, req *http.Request) {
 }
 
 func (m *Map) hideAllSame(rw http.ResponseWriter, req *http.Request) {
-	s := .getSession(req)
+	s := m.getSession(req)
 	if s== nil || !s.Auths.Has.(AUTH_ADMIN) {
 		http.Redirect(rw, req, "/", 302)
 		return
