@@ -112,6 +112,7 @@ func main() {
 	http.HandleFunc("/admin/merge", m.merge)
 	http.HandleFunc("/admin/map", m.adminMap)
 	http.HandleFunc("/admin/mapic", m.adminICMap)
+	http.HandleFunc("/admin/fukofftile", m.fkof)
 
 	// Map frontend endpoints
 	http.HandleFunc("/map/api/v1/characters", m.getChars)

@@ -54,6 +54,9 @@
                 <li>
                     <a @click.prevent="hideMarker(data.data)">Hide marker {{ data.data.name }}</a>
                 </li>
+				<li>
+					<a @click.prevent="hideAllSame(data.data)">Hide all markers with the same name {{ data.data.name }}</a>
+				</li>
             </template>
         </vue-context>
         <modal name="coordSet">
@@ -127,7 +130,7 @@
                 this.markersHidden = value;
             },
             trackingCharacterId(value) {
-                if (value !== -1) {
+                if (value !== -2) {
                     let character = this.characters.byId(value);
                     if (character) {
                         this.changeMap(character.map);
@@ -409,6 +412,10 @@
                 this.$http.get(`${API_ENDPOINT}/admin/hideMarker`, {params: {id: data.id}});
                 this.markers.byId(data.id).remove(this);
             },
+			hideAllSame(data) {
+				this.$http.get(`${API_ENDPOINT}/admin/hideAllSame`, {params: {name: data.name}});
+				this.markers.byName(data.name).remove(this);
+			},
             queryCoordSet(data) {
                 this.coordSetFrom = data.coords;
                 this.$modal.show('coordSet');
