@@ -80,7 +80,7 @@ func (m *Map) getMarkers(rw http.ResponseWriter, req *http.Request) {
 			} else	{
 			markers = append(markers, FrontendMarker{
 				Image:  m.Image,
-				Hidden: true,
+				Hidden: m.Hidden,
 				ID:     m.ID,
 				Name:   m.Name,
 				Map:    g.Map,
