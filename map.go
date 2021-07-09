@@ -65,7 +65,7 @@ func (m *Map) getMarkers(rw http.ResponseWriter, req *http.Request) {
 			}
 			g := GridData{}
 			json.Unmarshal(graw, &g)
-			if m.Name == "Waypoint" || m.Name == "Cave (Surface)" {
+			if m.Name == "Waypoint" {
 			markers = append(markers, FrontendMarker{
 				Image:  m.Image,
 				Hidden: true,
