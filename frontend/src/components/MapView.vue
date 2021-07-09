@@ -137,7 +137,7 @@
             },
 			hideCaves(value) {
                 if(value) {
-                    this.markers.getElements().filter(it => it.name.includes("Cave") || it.name.includes("Waypoint")).(it => it.remove(this));
+                    this.markers.getElements().filter(it => it.name.includes("Cave") || it.name.includes("Waypoint")).forEach(it => it.remove(this));
                 } else {
                     this.markers.getElements().filter(it => it.map == this.mapid || it.map == this.overlayLayer.map).forEach(it => it.add(this));
                 }
