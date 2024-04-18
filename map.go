@@ -65,19 +65,6 @@ func (m *Map) getMarkers(rw http.ResponseWriter, req *http.Request) {
 			}
 			g := GridData{}
 			json.Unmarshal(graw, &g)
-			if m.Name == "Waypoint" {
-			markers = append(markers, FrontendMarker{
-				Image:  m.Image,
-				Hidden: true,
-				ID:     m.ID,
-				Name:   m.Name,
-				Map:    g.Map,
-				Position: Position{
-					X: m.Position.X + g.Coord.X*100,
-					Y: m.Position.Y + g.Coord.Y*100,
-				},
-			})
-			} else	{
 			markers = append(markers, FrontendMarker{
 				Image:  m.Image,
 				Hidden: m.Hidden,
@@ -89,7 +76,6 @@ func (m *Map) getMarkers(rw http.ResponseWriter, req *http.Request) {
 					Y: m.Position.Y + g.Coord.Y*100,
 				},
 			})
-			}
 			return nil
 		})
 	})

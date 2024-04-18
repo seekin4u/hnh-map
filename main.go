@@ -120,7 +120,6 @@ func main() {
 	http.HandleFunc("/map/api/admin/wipeTile", m.wipeTile)
 	http.HandleFunc("/map/api/admin/setCoords", m.setCoords)
 	http.HandleFunc("/map/api/admin/hideMarker", m.hideMarker)
-	http.HandleFunc("/map/api/admin/hideAllSame", m.hideAllSame)
 	http.HandleFunc("/map/updates", m.watchGridUpdates)
 	http.HandleFunc("/map/grids/", m.gridTile)
 	http.HandleFunc("/map/api/maps", m.getMaps)

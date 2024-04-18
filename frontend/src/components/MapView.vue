@@ -15,11 +15,6 @@
                                v-model="hideMarkers">
                         <label class="form-check-label" for="check-hide-markers">Hide Markers</label>
                     </div>
-					<div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="check-hide-caves"
-                               v-model="hideCaves">
-                        <label class="form-check-label" for="check-hide-caves">Hide Caves</label>
-                    </div>
                     <button type="button" class="btn btn-secondary" style="margin-top: 10px;" v-on:click="zoomOut">Zoom
                         out
                     </button>
@@ -59,13 +54,10 @@
                 <li>
                     <a @click.prevent="hideMarker(data.data)">Hide marker {{ data.data.name }}</a>
                 </li>
-				<li>
-					<a @click.prevent="hideAllSame(data.data)">Hide all markers with the same name {{ data.data.name }}</a>
-				</li>
             </template>
         </vue-context>
         <modal name="coordSet">
-            <form v-on:submit.prevent="setCoords(form)"> 
+            <form v-on:submit.prevent="setCoords()"> 
                 <input v-model="coordSet.x" class="input" type="text" placeholder="0">
                 <input v-model="coordSet.y" class="input" type="text" placeholder="0">
                 <button class="button is-primary">Submit</button>
@@ -76,7 +68,7 @@
 
 <script>
     import {ModelSelect} from 'vue-search-select'
-    import {GridCoordLayer, MouseoverLayer, HnHCRS, HnHMaxZoom, HnHMinZoom, TileSize} from "../utils/LeafletCustomTypes";
+    import {GridCoordLayer, HnHCRS, HnHMaxZoom, HnHMinZoom, TileSize} from "../utils/LeafletCustomTypes";
     import {SmartTileLayer} from "../utils/SmartTileLayer";
     import * as L from "leaflet";
     import {API_ENDPOINT} from "../main";
@@ -95,7 +87,6 @@
             return {
                 showGridCoordinates: false,
                 hideMarkers: false,
-				hideCaves: false,
                 expandControlPanel: true,
 
                 trackingCharacterId: -1,
@@ -135,16 +126,8 @@
                 }
                 this.markersHidden = value;
             },
-			hideCaves(value) {
-                if(value) {
-                    this.markers.getElements().filter(it => it.name.includes("Cave")).forEach(it => it.remove(this));
-                } else {
-                    this.markers.getElements().filter(it => it.map == this.mapid || it.map == this.overlayLayer.map).forEach(it => it.add(this));
-                }
-                this.markersHidden = value;
-            },
             trackingCharacterId(value) {
-                if (value !== -2) {
+                if (value !== -1) {
                     let character = this.characters.byId(value);
                     if (character) {
                         this.changeMap(character.map);
@@ -426,15 +409,11 @@
                 this.$http.get(`${API_ENDPOINT}/admin/hideMarker`, {params: {id: data.id}});
                 this.markers.byId(data.id).remove(this);
             },
-			hideAllSame(data) {
-				this.$http.get(`${API_ENDPOINT}/admin/hideAllSame`, {params: {name: data.name}});
-				this.markers.byName(data.name).remove(this);
-			},
             queryCoordSet(data) {
                 this.coordSetFrom = data.coords;
                 this.$modal.show('coordSet');
             },
-            setCoords(form) {
+            setCoords() {
                 this.$http.get(`${API_ENDPOINT}/admin/setCoords`, {params: {
                     map: this.mapid,
                     fx: this.coordSetFrom.x, 
